@@ -23,7 +23,11 @@ from assert_ai.core.io import (
     resolve_path,
     write_json,
 )
-from assert_ai.core.model_client import GenerateOptions, generate_structured
+from assert_ai.core.model_client import (
+    GenerateOptions,
+    generate_structured,
+    supports_web_search_preview,
+)
 
 DEFAULT_LEVEL_COUNT = 3
 
@@ -336,7 +340,9 @@ async def run_stratification(
                 options=GenerateOptions(
                     temperature=temperature,
                     max_tokens=50_000,
-                    web_search=True,
+                    # web_search_preview is an OpenAI Responses API tool; asking
+                    # for it on any other provider raises before generation.
+                    web_search=supports_web_search_preview(model),
                     reasoning_effort=reasoning_effort,
                 ),
             )

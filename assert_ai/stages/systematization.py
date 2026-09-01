@@ -93,8 +93,9 @@ def _validate_systematization(systematization: str) -> None:
 
 
 def _validate_summary_items(summary_items: list[SummaryItem]) -> None:
-    if not summary_items:
-        raise ValueError("systematization requires at least one summary item")
+    # An empty list is valid. The systematization prompt was migrated to the
+    # JSON output contract, which does not emit summary_items, and the only
+    # consumer (systematization_convert) already treats them as optional.
     for item in summary_items:
         if not item.description.strip():
             raise ValueError("systematization summary_items.description must be non-empty")

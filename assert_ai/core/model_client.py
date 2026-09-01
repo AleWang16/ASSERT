@@ -455,6 +455,11 @@ def _supports_web_search_preview(model: str) -> bool:
     return _model_family(model) in {"openai", "azure"}
 
 
+def supports_web_search_preview(model: str) -> bool:
+    """Public alias: whether ``model`` can use the web_search_preview tool."""
+    return _supports_web_search_preview(model)
+
+
 def _require_web_search_preview_support(model: str) -> None:
     if _supports_web_search_preview(model):
         return
