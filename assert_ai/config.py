@@ -35,6 +35,20 @@ from assert_ai.core.config_model import (
 )
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def artifacts_base() -> Path:
+    """Base directory for *written* artifacts.
+
+    Run output belongs to the invocation, not to the installation. Resolving
+    it against ROOT only happens to work under ``pip install -e .`` from a
+    checkout; installed as a dependency, ROOT is site-packages and results are
+    written inside the virtualenv, where the next sync deletes them and the
+    CLI's own commands cannot find them. Package *data* stays ROOT-relative.
+    """
+    return Path.cwd()
+
+
 OUTPUT_PATH_KEYS = {"save_dir", "save_path"}
 PIPELINE_STAGE_ORDER = (
     "systematize",
@@ -200,7 +214,7 @@ def load_runtime_context(
 
     artifacts_root = Path(raw.get("artifacts_root") or "artifacts").expanduser()
     if not artifacts_root.is_absolute():
-        artifacts_root = (ROOT / artifacts_root).resolve()
+        artifacts_root = (artifacts_base() / artifacts_root).resolve()
     else:
         artifacts_root = artifacts_root.resolve()
 

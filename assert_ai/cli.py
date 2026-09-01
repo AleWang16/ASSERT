@@ -19,6 +19,7 @@ from click.shell_completion import CompletionItem
 from rich.console import Console
 from rich.table import Table
 
+from assert_ai.config import artifacts_base
 from assert_ai.core.config_model import DEFAULT_INFERENCE_CONCURRENCY
 from assert_ai.core.io import load_json, load_jsonl, get_permissible_flag, row_behavior
 from assert_ai.core.judge import get_verdict_dimension, infer_judge_status, is_valid_event_flag
@@ -35,7 +36,7 @@ from assert_ai.stages import STAGE_NAMES
 
 ROOT = Path(__file__).resolve().parent.parent
 JUDGE_DIMENSIONS_PATH = ROOT / "examples" / "eval-definitions" / "judge_dimensions.yaml"
-DEFAULT_RESULTS_DIR = ROOT / "artifacts" / "results"
+DEFAULT_RESULTS_DIR = artifacts_base() / "artifacts" / "results"
 
 CONTEXT_SETTINGS = {
     "help_option_names": ["-h", "--help"],
@@ -281,7 +282,7 @@ def _metric_label(metric: str) -> str:
 def _resolve_results_dir(results_dir: Path) -> Path:
     path = results_dir.expanduser()
     if not path.is_absolute():
-        path = (ROOT / path).resolve()
+        path = (artifacts_base() / path).resolve()
     return path
 
 
@@ -313,7 +314,7 @@ def _resolve_acs_run_dir(run_dir: Path | None, suite: str | None, run_id: str | 
 
 def _default_acs_out_dir(summary: Any) -> Path:
     suite_id = str(getattr(summary, "suite_id", "") or "policy")
-    return ROOT / "artifacts" / "acs" / suite_id
+    return artifacts_base() / "artifacts" / "acs" / suite_id
 
 
 def _print_acs_artifacts(artifacts: Any) -> None:
